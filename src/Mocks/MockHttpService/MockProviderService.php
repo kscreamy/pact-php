@@ -26,6 +26,11 @@ class MockProviderService implements IMockProviderService
     private $_host;
 
     /**
+     * @var MockHttpClient
+     */
+    private $_client;
+
+    /**
      * @var \Windwalker\Http\HttpClient
      */
     private $_httpClient;
@@ -55,6 +60,7 @@ class MockProviderService implements IMockProviderService
         $this->_config = $config;
         $this->_httpClient = new \Windwalker\Http\HttpClient();
         $this->_host = new MockProviderHost();
+        $this->_client = new MockHttpClient($this->_host);
 
         $pactFile = new ProviderServicePactFile();
         $this->setPactFile($pactFile);
@@ -96,6 +102,14 @@ class MockProviderService implements IMockProviderService
     public function getHost()
     {
         return $this->_host;
+    }
+
+    /**
+     * @return MockHttpClient
+     */
+    public function getClient()
+    {
+        return $this->_client;
     }
 
     /**
