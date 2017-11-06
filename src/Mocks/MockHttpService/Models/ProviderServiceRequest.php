@@ -4,6 +4,7 @@ namespace PhpPact\Mocks\MockHttpService\Models;
 
 use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker;
 use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker;
+use PhpPact\Mocks\MockHttpService\Matchers\UrlEncodedHttpBodyMatchChecker;
 use PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatchChecker;
 use PhpPact\Matchers\Rules\MatchingRule;
 
@@ -185,6 +186,8 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
             $this->_bodyMatchers[] = new SerializeHttpBodyMatchChecker();
         } elseif ($this->getContentType() == "application/xml") {
             $this->_bodyMatchers[] = new XmlHttpBodyMatchChecker(false);
+        } elseif ($this->getContentType() == "application/x-www-form-urlencoded") {
+            $this->_bodyMatchers[] = new UrlEncodedHttpBodyMatchChecker(false);
         } else {
             // make JSON the default based on specification tests
             $this->_bodyMatchers[] = new JsonHttpBodyMatchChecker(false);
@@ -206,6 +209,10 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
         $key = 'Content-Type';
         if (is_object($headers) && isset($headers->$key)) {
             return $headers->$key;
+        }
+
+        if (is_array($headers) && isset($headers[$key])) {
+            return $headers[$key];
         }
         return 'application/json';
     }
