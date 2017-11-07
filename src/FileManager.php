@@ -10,10 +10,30 @@ use PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile;
  */
 class FileManager
 {
+    /**
+     * @var string
+     */
+    private $directory;
+
+    /**
+     * FileManager constructor.
+     * @param $directory
+     */
+    public function __construct($directory)
+    {
+        $this->directory = $directory;
+    }
+
     public function getPactFilePath($consumerName, $providerName, $version)
     {
+        if (!is_dir($this->directory)) {
+            mkdir($this->directory, 0777, true);
+        }
+
+        $this->directory = realpath($this->directory);
+
         return sprintf('%s/pact%s.%s.%s.json',
-            sys_get_temp_dir(),
+            $this->directory,
             $consumerName,
             $providerName,
             $version);
