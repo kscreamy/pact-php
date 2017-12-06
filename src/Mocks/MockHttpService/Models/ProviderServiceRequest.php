@@ -207,8 +207,8 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
     {
         $headers = $this->getHeaders();
         $key = 'Content-Type';
-        if (is_object($headers) && isset($headers->$key)) {
-            return $headers->$key;
+        if (is_array($headers) && isset($headers[$key])) {
+            return $headers[$key];
         }
 
         if (is_array($headers) && isset($headers[$key])) {
@@ -238,7 +238,11 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
         }
 
         if ($this->_body) {
-            $obj->body = $this->_body;
+            if ($this->isJsonString($this->_body)) {
+                $obj->body = \json_decode($this->_body);
+            } else {
+                $obj->body = $this->_body;
+            }
         }
 
         if (count($this->_matchingRules) > 0) {
@@ -254,5 +258,13 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
         }
 
         return $obj;
+    }
+
+    private function isJsonString($string) {
+        if (!is_string($string)) {
+            return false;
+        }
+        \json_decode($string);
+        return (\json_last_error() == JSON_ERROR_NONE);
     }
 }
