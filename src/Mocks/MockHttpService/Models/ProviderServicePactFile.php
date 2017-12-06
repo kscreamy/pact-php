@@ -9,6 +9,10 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 {
     private $_interactions;
 
+    private $_pactUuid;
+
+    private $_consumerVersion;
+
     public function __construct()
     {
         if (is_callable('parent::__construct')) {
@@ -189,4 +193,41 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
         throw new \PhpPact\PactFailureException("No interaction found matching this request");
     }
+
+    /**
+     * @return string
+     */
+    public function getPactUuid()
+    {
+        return $this->_pactUuid;
+    }
+
+    /**
+     * @param string $pactUuid
+     * @return $this
+     */
+    public function setPactUuid($pactUuid)
+    {
+        $this->_pactUuid = $pactUuid;
+        return $this;
+    }
+
+    /**
+     * @param $consumerVersion
+     * @return $this
+     */
+    public function setConsumerVersion($consumerVersion)
+    {
+        $this->_consumerVersion = $consumerVersion;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConsumerVersion()
+    {
+        return $this->_consumerVersion;
+    }
+
 }

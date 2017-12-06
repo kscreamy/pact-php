@@ -31,6 +31,13 @@ class ProviderServicePactMapper implements \PhpPact\Mappers\IMapper
         $pact->setMetaData($request->metadata);
         $pact->setInteractions($request->interactions);
 
+        $matches = [];
+        preg_match('#/pact-version/([^\/]+)/#', $request->_links->{"pb:publish-verification-results"}->href, $matches);
+
+        $pact->setPactUuid($matches[1]);
+
+        $pact->setConsumerVersion($request->_links->{"pb:consumer-version"}->name);
+
         return $pact;
     }
 }
