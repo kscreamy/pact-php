@@ -125,12 +125,17 @@ class PactBrokerConnector
      * http://{your-pact-broker}/pacts/provider/{your-provider}/latest
      *
      * @param $providerName
+     * @param $tag string|null
      * @return array
      */
-    public function retrieveLatestProviderPacts($providerName)
+    public function retrieveLatestProviderPacts($providerName, $tag = null)
     {
         $url = $this->_uriOptions->getBaseUri();
         $path = '/pacts/provider/' . urlencode($providerName) . '/latest';
+
+        if ($tag) {
+            $path.= '/' . $tag;
+        }
 
         // build request
         $uri = (new \Windwalker\Uri\PsrUri($url))
